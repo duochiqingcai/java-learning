@@ -1,0 +1,205 @@
+1.查找重复数据 GROUP BY + HAVING
+eg：编写sql查询，查找person表中重复的电子邮箱.
+
+person表：
++----+---------+
+| Id | Email   |
++----+---------+
+| 1  | a@b.com |
+| 2  | c@d.com |
+| 3  | a@b.com |
++----+---------+
+
+期望结果：
++---------+
+| Email   |
++---------+
+| a@b.com |
++---------+
+
+
+Answer：
+使用 GROUP BY 和 HAVING 条件筛选（注意WHERE和HAVING的区别，HAVING一般在GROUP BY之后）
+向 GROUP BY 添加条件的一种更常用的方法是使用 HAVING 子句，该子句更为简单高效。
+
+SELECT Email
+FROM person
+GROUP BY Email
+HAVING count(Email)>1
+;
+----------------------------------------------------------分割线---------------------------------------------------------
+
+2.按条件查询数据并排序 WHERE + ORDER BY
+eg：某城市开了一家新的电影院，吸引了很多人过来看电影。该电影院特别注意用户体验，专门有个 LED显示板做电影推荐，上面公布着影评和相关电影描述。
+    作为该电影院的信息部主管，您需要编写一个 SQL查询，找出所有影片描述为非 boring (不无聊) 的并且 id 为奇数 的影片，结果请按等级 rating 排列。
+
+cinema表：
++---------+-----------+--------------+-----------+
+|   id    | movie     |  description |  rating   |
++---------+-----------+--------------+-----------+
+|   1     | War       |   great 3D   |   8.9     |
+|   2     | Science   |   fiction    |   8.5     |
+|   3     | irish     |   boring     |   6.2     |
+|   4     | Ice song  |   FanTaCy    |   8.6     |
+|   5     | House card|   Interesting|   9.1     |
++---------+-----------+--------------+-----------+
+
+期望结果：
++---------+-----------+--------------+-----------+
+|   id    | movie     |  description |  rating   |
++---------+-----------+--------------+-----------+
+|   5     | House card|   Interesting|   9.1     |
+|   1     | War       |   great 3D   |   8.9     |
++---------+-----------+--------------+-----------+
+
+
+Answer：
+条件通过使用MOD(EXP1,EXP2)函数确定奇数id(两个数值表达式做除法越算后的余数)，然后description !='boring',最后使用order by排序，desc为逆序。
+
+SELECT id,movie,description,rating
+FROM cinema
+WHERE description != 'boring' AND mod(id,2)=1
+ORDER BY rating DESC
+;
+----------------------------------------------------------分割线---------------------------------------------------------
+
+3.连接查询 LEFT JOIN + ON
+eg：编写一个 SQL 查询，满足条件：无论 person 是否有地址信息，都需要基于上述两表提供 person 的以下信息：
+    FirstName, LastName, City, State.
+
+person表：
++-------------+---------+---------+
+| 列名         | 类型    |    值   |
++-------------+---------+---------+
+| PersonId    | int     |    1    |
+| FirstName   | varchar |   Kobe  |
+| LastName    | varchar |  Bryant |
++-------------+---------+---------+
+PersonId 是上表主键
+
++-------------+---------+---------+
+| 列名         | 类型    |    值    |
++-------------+---------+---------+
+| AddressId   | int     |    1    |
+| PersonId    | int     |    2    |
+| City        | varchar |    LA   |
+| State       | varchar |  Calia  |
++-------------+---------+---------+
+AddressId 是上表主键
+
+期望结果：
++-------------+---------+---------+
+| 列名         | 类型    |    值    |
++-------------+---------+---------+
+| FirstName   | int     |   Kobe  |
+| LastName    | int     |  Bryant |
+| City        | varchar |    LA   |
+| State       | varchar |  Calia  |
++-------------+---------+---------+
+
+
+Answer:
+因为表 Address 中的 personId 是表 Person 的外关键字，所以我们可以连接这两个表来获取一个人的地址信息。
+考虑到可能不是每个人都有地址信息，我们应该使用 outer john 而不是默认的 inner join。
+
+SELECT FirstName, LastName, City, State
+FROM Person LEFT JOIN Address
+ON Person.PersonId = Address.PersonId
+;
+
+注：join连接查询中on条件和where条件区别
+数据库在通过连接两张或多张表来返回记录时，都会生成一张中间的临时表，然后再将这张临时表返回给用户。
+在使用left jion时，on和where条件的区别如下：
+
+1、on条件是在生成临时表时使用的条件，它不管on中的条件是否为真，都会返回左边表中的记录。
+2、where条件是在临时表生成好后，再对临时表进行过滤的条件。这时已经没有left join的含义（必须返回左边表的记录）了，条件不为真的就全部过滤掉。
+----------------------------------------------------------分割线---------------------------------------------------------
+
+4.交换,流程控制
+eg：给定一个 salary 表，如下所示，有 m=男性 和 f=女性 的值 。交换所有的 f 和 m 值（例如，将所有 f 值更改为 m，反之亦然）。
+要求使用一个更新（Update）语句，并且没有中间临时表。请注意，你必须编写一个 Update 语句，不要编写任何 Select 语句。
+
+salary表：
+| id | name | sex | salary |
+|----|------|-----|--------|
+| 1  | A    | m   | 2500   |
+| 2  | B    | f   | 1500   |
+| 3  | C    | m   | 5500   |
+| 4  | D    | f   | 500    |
+
+期望结果：
+| id | name | sex | salary |
+|----|------|-----|--------|
+| 1  | A    | f   | 2500   |
+| 2  | B    | m   | 1500   |
+| 3  | C    | f   | 5500   |
+| 4  | D    | m   | 500    |
+
+
+Answer：
+方法一：使用 CASE...WHEN... 流程控制语句的同时使用 UPDATE 语句。
+    case用法： case a when cond1 then exp1 else cond2 then exp2 else exp3
+    当a满足条件cond1时， 返回exp1 当a满足条件cond2时， 返回exp2 否则 返回exp3。
+
+UPDATE salary
+SET
+    sex = CASE sex
+        WHEN 'm' THEN 'f'
+        ELSE 'm'
+        END
+;
+
+方法二：使用 IF()流程控制语句
+        if()用法：IF(expr1,expr2,expr3) 当expr1为true时，返回expr2，否则返回expr3.
+
+UPDATE salary
+SET sex = IF(sex = 'm','f','m')
+;
+----------------------------------------------------------分割线---------------------------------------------------------
+
+5.
+eg：employee 表包含所有员工，他们的经理也属于员工。每个员工都有一个 Id，此外还有一列对应员工所属经理的 Id，比如Id为1的员工的经理id为3，就是Sam;
+编写一个 SQL 查询，该查询可以获取收入超过他们经理的员工的姓名。在上面的表格中，Joe 是唯一一个收入超过他的经理的员工。
+
+employee表：
++----+-------+--------+-----------+
+| Id | Name  | Salary | ManagerId |
++----+-------+--------+-----------+
+| 1  | Joe   | 70000  | 3         |
+| 2  | Henry | 80000  | 4         |
+| 3  | Sam   | 60000  | NULL      |
+| 4  | Max   | 90000  | NULL      |
++----+-------+--------+-----------+
+
+期望结果：
++----------+
+| Employee |
++----------+
+| Joe      |
++----------+
+
+
+Answer：
+方法一：普通方法
+SELECT e1.Name AS Employee
+FROM Employee AS e1,Employee AS e2
+WHERE e1.ManagerId = e2.Id
+AND e1.Salary > e2.Salary
+;
+
+方法二：LEFT JOIN...ON 连接查询
+SELECT e1.Name AS Employee
+FROM Employee AS e1
+LEFT JOIN Employee AS e2
+ON e1.ManagerId = e2.Id
+WHERE e1.Salary > e2.Salary
+;
+
+方法三：子查询
+SELECT Name AS Employee
+FROM Employee AS e
+WHERE Salary >
+    (
+        SELECT Salary FROM Employee WHERE Id = e.ManagerId
+    )
+    ;
