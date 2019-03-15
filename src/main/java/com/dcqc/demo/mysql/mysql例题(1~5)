@@ -203,3 +203,11 @@ WHERE Salary >
         SELECT Salary FROM Employee WHERE Id = e.ManagerId
     )
     ;
+
+select s1.s_name,c.c_name,s2.s_score
+from student as s1
+left join score as s2
+on s2.s_score > 70
+left join course as c
+on s2.s_score > 70
+where s1.s_id=s2.s_id and c.c_id=s2.s_id;
