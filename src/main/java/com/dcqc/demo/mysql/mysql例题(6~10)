@@ -72,5 +72,113 @@ WHERE P1.Email = P2.Email AND P1.Id > P2.Id;
 
 SELECT *
 FROM person;
+----------------------------------------------------------分割线---------------------------------------------------------
 
-8.
+8.日期比较 DATEIFF...+INNER...JOIN ON
+eg:给定一个 Weather 表，编写一个 SQL 查询，来查找与之前（昨天的）日期相比温度更高的所有日期的 Id。
+
+weather表：
++---------+------------------+------------------+
+| Id(INT) | RecordDate(DATE) | Temperature(INT) |
++---------+------------------+------------------+
+|       1 |       2015-01-01 |               10 |
+|       2 |       2015-01-02 |               25 |
+|       3 |       2015-01-03 |               20 |
+|       4 |       2015-01-04 |               30 |
++---------+------------------+------------------+
+
+期望结果：
++----+
+| Id |
++----+
+|  2 |
+|  4 |
++----+
+
+方法：使用DATEIFF函数，获得两个日期的天数差集，然后连接查询
+
+SELECT
+    weather.id AS 'Id'
+FROM
+    weather
+    JOIN
+    weather w ON DATEDIFF(weather.RecordDate, w.RecordDate) = 1
+        AND weather.Temperature > w.Temperature
+;
+----------------------------------------------------------分割线---------------------------------------------------------
+
+9.条件查询，去重复
+eg：有一个courses 表 ，有: student (学生) 和 class (课程)。请列出所有超过或等于5名学生的课。
+
+courses表：
++---------+------------+
+| student | class      |
++---------+------------+
+| A       | Math       |
+| B       | English    |
+| C       | Math       |
+| D       | Biology    |
+| E       | Math       |
+| F       | Computer   |
+| G       | Math       |
+| H       | Math       |
+| I       | Math       |
++---------+------------+
+Note:
+学生在每个课中不应被重复计算。
+
+期望输出：
++---------+
+| class   |
++---------+
+| Math    |
++---------+
+
+方法：GROUP BY + HAVING  +COUNT, DISTINCT用于去重。
+SELECT class
+FROM courses
+GROUP BY class
+HAVING COUNT(DISTINCT student)>=5
+;
+----------------------------------------------------------分割线---------------------------------------------------------
+
+10.条件查询  ORDER...BY排序
+eg：编写一个 SQL 查询，获取 Employee 表中第二高的薪水（Salary） 。
+employee表：
++----+--------+
+| Id | Salary |
++----+--------+
+| 1  | 100    |
+| 2  | 200    |
+| 3  | 300    |
++----+--------+
+
+例如上述 Employee 表，SQL查询应该返回 200 作为第二高的薪水。如果不存在第二高的薪水，那么查询应返回 null。
+
+期望结果：
++---------------------+
+| SecondHighestSalary |
++---------------------+
+| 200                 |
++---------------------+
+
+方法一：子查询+LIMIT子句；将不同的薪资按降序排序，然后使用 LIMIT 子句获得第二高的薪资。
+SELECT
+    (SELECT DISTINCT
+            Salary
+        FROM
+            Employee
+        ORDER BY Salary DESC
+        LIMIT 1 OFFSET 1) AS SecondHighestSalary
+;
+
+方法二：使用 IFNULL 和 LIMIT 子句；解决 “NULL” 问题的另一种方法是使用 “IFNULL” 函数
+SELECT
+    IFNULL(
+      (SELECT DISTINCT Salary
+       FROM Employee
+       ORDER BY Salary DESC
+       LIMIT 1 OFFSET 1),
+    NULL) AS SecondHighestSalary
+;
+----------------------------------------------------------分割线---------------------------------------------------------
