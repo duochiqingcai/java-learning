@@ -8,7 +8,7 @@ package com.dcqc.demo.基础.接口和抽象类;
  **/
 public abstract class DemoAbstractClass {
     //抽象类属性
-    private String name;
+    public String name;
 
     //抽象类构造方法
     public DemoAbstractClass(String name) {

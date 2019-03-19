@@ -16,5 +16,6 @@ public class DemoAbstractClassEx extends DemoAbstractClass {
     @Override
     public void doOtherThing() {
         System.out.println("子类继承抽象类，并重写方法。");
+        System.out.println(name);
     }
 }
