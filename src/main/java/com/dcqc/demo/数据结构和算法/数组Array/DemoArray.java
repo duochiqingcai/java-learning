@@ -33,5 +33,12 @@ public class DemoArray {
 
         System.out.println(array2[3]);
 
+
+        //数组的地址
+        //定义数组,int的字节长度为4字节，占4内存空间为4
+        int[] array3 = {1, 2, 3, 4, 5};
+        //数组内存首地址，16进制
+        System.out.println(array3.toString());
+
     }
 }
