@@ -144,9 +144,9 @@ Answer：
 UPDATE salary
 SET
     sex = CASE sex
-        WHEN 'm' THEN 'f'
-        ELSE 'm'
-        END
+            WHEN 'm' THEN 'f'
+            ELSE 'm'
+          END
 ;
 
 方法二：使用 IF()流程控制语句
