@@ -1,0 +1,25 @@
+1.ArrayList 和 LinkedList的异同
+    a.线程是否安全：两者均是不同步的，线程不安全。
+    b.底层数据结构：ArrayList底层是Object数组；LinkedList底层是双向链表
+    c.插入和删除是否受元素位置的影响：
+        1.ArrayList底层为数组，所以插入和删除时间复杂度受元素位置影响，为O(n);
+        2.LinkedList底层为链表，不受影响，插入和删除时间复杂度为O(1);
+    d.是否支持快速随机访问：
+        ArrayList支持随机访问，LinkedList不支持。
+    e.占用内存空间：
+        ArrayList的空 间浪费主要体现在在list列表的结尾会预留一定的容量空间，而LinkedList的空间花费则体现在它的每一个元素都需要消耗
+        比ArrayList更多的空间（因为要存放直接后继和直接前驱以及数据）
+
+2.ArrayList 与 Vector 区别
+    Vector线程安全，消耗时间多；ArrayList线程不安全。
+
+3.HashMap的特性
+    a.线程是否安全：HashMap线程不安全(若想要线程安全，可使用ConcurrentHashMap)
+    b.底层数据结构：
+        在JDK1.8之前，HashMap底层是数组和链表组合使用，即链表散列。HashMap通过key的hashCode经过扰动函数处理后得到hash值，然后通过
+    (n-1)&hash判断当前元素存放的位置(这里的 n 指的是数组的长度),如果当前位置存在元素的话，就判断该元素与要存入的元素的 hash 值以及 key
+    是否相同，如果相同的话，直接覆盖，不相同就通过拉链法解决冲突。
+        所谓扰动函数指的就是 HashMap 的 hash 方法。使用 hash 方法也就是扰动函数是为了防止一些实现比较差的hashCode() 方法 换句话说使用
+    扰动函数之后可以减少碰撞。
+        在JDK1.8之后，HashMap底层是数组+链表+红黑树(链表长度大于8时转换为红黑树)。
+    c.
