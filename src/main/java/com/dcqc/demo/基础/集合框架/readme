@@ -22,4 +22,16 @@
         所谓扰动函数指的就是 HashMap 的 hash 方法。使用 hash 方法也就是扰动函数是为了防止一些实现比较差的hashCode() 方法 换句话说使用
     扰动函数之后可以减少碰撞。
         在JDK1.8之后，HashMap底层是数组+链表+红黑树(链表长度大于8时转换为红黑树)。
-    c.
+
+4.HashMap和HashTable的区别
+    a.线程是否安全：HashMap线程不安全，HashTable线程安全；HashTable 内部的方法基本都经过synchronized 修饰。（如果你要保证线程安全的话
+    就使用 ConcurrentHashMap 吧！）
+    b.底层数据结构： JDK1.8 以后的 HashMap 在解决哈希冲突时有了较大的变化，当链表长度大于阈值（默认为8）时，将链表转化为红黑树，以减少
+    搜索时间。Hashtable 没有这样的机制。
+    b.效率：因为线程安全的问题，HashMap 要比 HashTable 效率高一点。另外，HashTable 基本被淘汰，不要在代码中使用它；
+    c.对Null key 和Null value的支持： HashMap 中，null 可以作为键，这样的键只有一个，可以有一个或多个键所对应的值为 null。。但是在
+    HashTable 中 put 进的键值只要有一个 null，直接抛出 NullPointerException。
+    d.初始容量大小和每次扩充容量大小的不同 ： ①创建时如果不指定容量初始值，Hashtable 默认的初始大小为11，之后每次扩充，容量变为原来的2n+1。
+    HashMap 默认的初始化大小（数组大小）为16（必须是2的次幂）。之后每次扩充，容量变为原来的2倍。②创建时如果给定了容量初始值，那么 Hashtable 会直接使用你给定的大小，
+    而 HashMap 会将其扩充为2的幂次方大小（HashMap 中的 tableSizeFor() 方法保证，下面给出了源代码）。也就是说 HashMap 总是使用2的幂
+    作为哈希表的大小.
