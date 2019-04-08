@@ -1,0 +1,135 @@
+$个人理解
+Java泛型:
+泛型是为了规约、严谨。如List<String>、List<Integer>等,保障编译期类型安全，减少bug。
+泛型通过类型擦除实现，编译器在编译时擦除所有类型相关信息，所以运行时不存在任何类型相关信息，如果不指定则为Object。
+Array数组并不支持泛型，可以使用List替代。
+泛型的类型参数必须是应用类型（类、接口、数组等），不能为8种基本数据类型
+
+Java 的泛型只在编译阶段有效，编译过程中正确检验泛型结果后，会将泛型相关信息擦除，并且在对象进入和离开方法的边界处添加类型检查和类型转换的方法，
+即泛型信息不回进入运行时阶段。
+
+泛型类别：泛型接口、泛型类、泛型方法。
+在Java泛型中的通配符默认含义：
+    E Element（通常在集合中使用，因为集合中存放元素）
+    T Type（一般指Java类型）
+    K、V Key和Value（键和值）
+    N Number（一般指数值类型）
+    ? 非限定通配符（指不确定的Java类型）
+    <? extends T> 通过确保类型必须是T的子类来设定类型的上界
+    <? super T> 通过确保类型必须是T的父类来设定类型的下界
+
+类型擦除：一个参数化的类型经过擦除后会去除参数，如ArrayList<T>被擦除为ArrayList，变成Object。
+public static void main(String[] args) {
+    Generic<Integer> genericInteger = new Generic<>(123);
+    Generic<String> genericString= new Generic<>("Hello");
+    System.out.println(genericInteger.getClass() == genericString.getClass());  // 返回 true
+}
+结果返回true，说明虽然编译时Generic<Integer>和Generic<String>是不同的类型，但因为泛型的类型擦除，所以编译后genericInteger和genericString为相同的类型。
+
+1.泛型接口
+    a. 定义规则
+    public interface Generator<T>{
+        //接口中方法
+        public T method();
+    }
+    b.实现泛型接口(在实现泛型接口时需要传入泛型实参，否则编译出错)
+    b-1:
+    public class GeneratorImpl<T> implements Generator<T>{
+        @override
+        public T method(){
+            //doSomething
+        }
+    }
+
+    b-2:这种情况，实现类会指定所有使用泛型为String
+    public class GeneratorImpl implements Generator<String>{
+         @override
+         public String method(){
+            //doSomething
+         }
+    }
+
+2.泛型类
+    a.定义规则
+    public class Genaric<T>{
+        private T key;
+
+        public Generic(T key){
+            this.key=key;
+        }
+
+        public void setKey(T key){
+            this.key=key;
+        }
+
+        public T getKey(){
+            return key;
+        }
+    }
+
+    b.泛型类实例化(泛型的类型参数必须是应用类型（类、接口、数组等），不能为8种基本数据类型)
+    Generic<String> generic=new Generic<>("Hello");
+
+3.泛型方法
+    a.定义规则
+    在方法返回值前，包含形式参数，<T>,否则不是泛型方法，编译会出错。
+    public <T> T method(){
+        return null;
+    }
+
+4.类型参数的上下界限定
+    a.上界限定
+    <? extends T>
+    <? extends parentClass>
+    指定传入类型实参必须为parentClass或子类。
+
+    b.下界限定
+    <? super T>
+    <? super sonClass>
+    指定传入类型实参必须为sonClass或父类。
+
+5.泛型的约束和限制
+    a.不能使用8中基本数据类型实例化参数类型，必须使用引用类型。
+    byte、short、int、long；double、float；char；boolean。
+    因为类型擦除，而Object不能存储基本数据类型。
+
+    b.类型检查不能使用泛型
+    instanceof 进行类型检查，不能使用泛型。
+    eg：if(object instancef Generic<String>){} //error
+
+    c.数组不能创建泛型
+    因为类型擦除无法为元素赋值时类型检查，因此jdk不允许;可以使用List<T>。
+
+    d.Varargs警告
+    java不支持泛型类型的对象数组，可变参数是可以的。它也正是利用了强制类型转换，因此同样是类型不安全的。所以这种代码编译器会给一个警告。
+    去除警告有两种途径：一种是在定义可变参数方法上（本例中的getMiddle()）加上@SafeVarargs注解，
+    另一种是在调用该方法时添加@SuppressWarnings("unchecked")注解。
+
+    e.不能实例化泛型对象
+    T t=new T();//error
+    T.class.getInstance();//error
+    T.class.getInstance();//error
+
+    f.不能在泛型类的静态域中使用泛型类型
+
+
+    g.不能捕获泛型类型的异常
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

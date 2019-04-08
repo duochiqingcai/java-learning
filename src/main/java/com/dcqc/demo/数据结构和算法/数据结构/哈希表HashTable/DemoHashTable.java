@@ -1,4 +1,4 @@
-package com.dcqc.demo.数据结构和算法.哈希表HashTable;
+package com.dcqc.demo.数据结构和算法.数据结构.哈希表HashTable;
 
 import java.util.Hashtable;
 

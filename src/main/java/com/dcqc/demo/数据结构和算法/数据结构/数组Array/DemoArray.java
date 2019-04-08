@@ -1,4 +1,4 @@
-package com.dcqc.demo.数据结构和算法.数组Array;
+package com.dcqc.demo.数据结构和算法.数据结构.数组Array;
 
 /**
  * @program: java-learning

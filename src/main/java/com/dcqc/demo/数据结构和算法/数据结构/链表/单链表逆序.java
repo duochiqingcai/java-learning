@@ -1,4 +1,4 @@
-package com.dcqc.demo.数据结构和算法.链表;
+package com.dcqc.demo.数据结构和算法.数据结构.链表;
 
 /**
  * @program: java-learning
