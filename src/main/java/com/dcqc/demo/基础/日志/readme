@@ -1,0 +1,56 @@
+Java异常及其处理：———以下理解来自《码出高效》
+尽量不要try-catch会影响性能。
+
+哪里发生异常？
+    代码中使用try-catch发现、捕获异常，try-catch的使用范围要尽可能精确，不可将一大段代码全部定义在try-catch内，要区分稳定代码和非稳定代码，
+    对非稳定代码进行捕获、处理。
+
+谁来处理异常？
+    throw和throws区别：
+    throw是方法内部抛出具体异常类对象的关键字（可以在catch中）；而thorws用在方法signature上，表示方法调用者可以通过此方法声明向上抛出异常。（向上抛出：
+    指如果方法有调用者，向调用者抛出，交给调用者处理，如果调用者继续抛出，则最终交给jvm处理，程序中断；如果使用try-catch捕获处理，程序可继续运行）。
+
+    根据业务判断当前被捕获异常是否需要自己处理，如果可以则当前方法捕获并处理且没必要对外透出（重试、回滚等操作）；否则向上抛出，交给上层方法或者框架处理。
+
+怎么处理异常？
+    根据自身业务环境选择处理方式。
+
+1.异常分类（主要讲Exception）
+    所以异常都是Throwable的子类，分为Error（致命异常，如OutOfMemoryError、StackOverflowError等）和Exception（非致命异常）。
+    Exception又分为Runtime Exception(unChecked Exception继承RuntimeException)和Checked Exception。
+
+    a.Checked Exception
+    指需要代码中显式处理的异常，否则编译出错。常见如JDK中SQLException、ClassNotFoundException等。
+    根据可处理性又分为：引起注意型（自身可能无法处理）、坦然处置型（可处理）
+
+    b.Runtime Exception
+    分为可预测异常、需捕获异常、可透出异常。
+
+2.try-catch-finally代码块
+    try：监视代码运行过程，发现异常则跳转catch或者finally。
+    catch：可选执行代码块，如果没有异常发生，则不执行。
+    finally：必选执行代码块，不管有没有异常，只要存在finally必定执行（有三种情况不执行：a.没有进入try代码块 b.进入try后，出现死循环或者死锁状态
+    c.进入try但是执行了System.exit()了）；注：finally是在return表达式运行后执行的，此时会将return的结果暂存，执行finally后再将暂存结果返回。
+
+    finally中不可进行赋值和return操作！！！应该作为清理资源、释放连接、关闭管道流等操作。
+
+    try代码块和锁的关系：
+    lock方法应该放在try代码块之上。
+
+3.自定义异常
+    可以选择继承RuntimeException，因为自定义异常为CheckedException。
+
+    class 异常类名 extends RuntimeException
+    {
+    	public 异常类名(String msg)
+    	{
+    		super(msg);
+    	}
+    }
+
+
+
+
+
+
+
