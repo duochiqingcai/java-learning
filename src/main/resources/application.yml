@@ -1,0 +1,64 @@
+#1.springboot日志配置
+logging:
+  pattern:
+    console:"%d - %msg%n"
+  path: /Users/duochiqingcai/Documents/mylog/
+  file: demo.log
+  level: trace
+#2.spring相关配置
+spring:
+  #a.数据库连接配置
+  datasource: #-->
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      url: jdbc:mysql://localhost:3306/management?useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+      username: root
+      password: password
+      driver-class-name: com.mysql.cj.jdbc.Driver
+
+  #b.spring-security相关配置
+  security: #-->
+    #用户信息
+    user:
+      name: user
+      password: password
+      roles: USER
+    jwt:
+      token:
+        secret-key:dcqc-key
+        #jwt-token失效时间单位ms
+        expire-length:3600000
+
+
+  #thymeleaf配置
+  #  thymeleaf:
+  #    enabled: true
+  #    cache: false
+  #    suffix: .html
+  #    prefix: classpath:/templates/
+  #    mode: HTML
+  #    encoding: UTF-8
+  #    servlet:
+  #      content-type: text/html
+  #    enable-spring-el-compiler: true
+  #    check-template-location: true
+
+
+  #静态资源路径
+#  mvc:
+#    static-path-pattern: /**
+
+
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#3.mybatis配置信息
+mybatis:
+  configuration:
+    #配置项：开启下划线到驼峰的自动转换. 作用：将数据库字段根据驼峰规则自动注入到对象属性。
+    map-underscore-to-camel-case: true
+  #实体扫描，多个package用逗号或者分号分隔
+  type-aliases-package: com.dcqc.demo.entity
+  mapper-locations: classpath:mapper/*.xml
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
