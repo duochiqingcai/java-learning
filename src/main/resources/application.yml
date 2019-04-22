@@ -1,11 +1,15 @@
 #1.springboot日志配置
 logging:
-  pattern:
-    console:"%d - %msg%n"
-  path: /Users/duochiqingcai/Documents/mylog/
-  file: demo.log
-  level: trace
-#2.spring相关配置
+  #输出级别
+  level:
+    com.dcqc.demo: info
+  #输出路径和文件
+  path: D:\\Users\\duochiqingcai\\Documents\\mylog
+  file:
+    max-size: 10
+    max-history: 15
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 spring:
   #a.数据库连接配置
   datasource: #-->
@@ -15,40 +19,6 @@ spring:
       username: root
       password: password
       driver-class-name: com.mysql.cj.jdbc.Driver
-
-  #b.spring-security相关配置
-  security: #-->
-    #用户信息
-    user:
-      name: user
-      password: password
-      roles: USER
-    jwt:
-      token:
-        secret-key:dcqc-key
-        #jwt-token失效时间单位ms
-        expire-length:3600000
-
-
-  #thymeleaf配置
-  #  thymeleaf:
-  #    enabled: true
-  #    cache: false
-  #    suffix: .html
-  #    prefix: classpath:/templates/
-  #    mode: HTML
-  #    encoding: UTF-8
-  #    servlet:
-  #      content-type: text/html
-  #    enable-spring-el-compiler: true
-  #    check-template-location: true
-
-
-  #静态资源路径
-#  mvc:
-#    static-path-pattern: /**
-
-
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #3.mybatis配置信息
@@ -59,6 +29,3 @@ mybatis:
   #实体扫描，多个package用逗号或者分号分隔
   type-aliases-package: com.dcqc.demo.entity
   mapper-locations: classpath:mapper/*.xml
-#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-

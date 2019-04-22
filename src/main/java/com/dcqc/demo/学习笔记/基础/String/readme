@@ -1,0 +1,23 @@
+String相关（个人理解）：
+关键字：
+    1.字符串常量池（String Constant Pool）：JDK6及之前版本，字符串常量池存放在方法区（Perm区，永久代）中；JDK7之后，保存在堆内存（Heap）中，
+        用来存放字符串常量。
+    2.intern()函数：JDK1.6之前，作用是先判断字符串常量是否在字符串常量池中，如果存在直接返回该字符串，如果没有，则在字符串常量池中创建该常量对象；
+        JDK1.7后，先判断字符串常量是否在字符串常量池中，如果存在直接返回该字符串常量，如果没有，则在堆中把这个字符串常量对象的引用复制添加到字符串
+        常量池中（注意：添加的是对象在堆中的引用）。
+
+1.Java中两种创建String字符串对象的方式（以下介绍默认字符串常量不存在，都是新创建）：
+    a. String s1="abc";
+    未使用new关键字，通过“字面量”赋值，直接在字符串常量池中创建对象，共创建1个String对象。
+       String s1="abc"+"xyz";在字符串常量池中创建3个对象"abc","xyz","abcxyz"，但经过编译器优化，最红只有存在"abcxyz",s1指向"abcxyz"的引用。
+
+    b. String s2=new String("xyz");
+    使用new关键字创建时，首先在字符串常量池中创建“xyz”字符串对象，然后在堆上（Heap）中创建一个“xyz”字符串对象，s2引用指向堆上的内存地址；创建2个String对象。
+       String s2=new String("abc")+new String("xyz")，字符串常量池中“abc”，“xyz”；堆上“abc”，“xyz”，“abcxyz”；共创建6个String对象。
+
+常见面试题：
+    1.String、StringBuffer、StringBuilder的区别
+    可以查看相关资料。
+    2.String s1="ab";String s2="a"+"b";a == b是否为true？
+    true，因为是在字符串常量池中创建，都相同。
+

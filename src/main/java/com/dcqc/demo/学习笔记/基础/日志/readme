@@ -1,0 +1,50 @@
+Java日志
+
+1.日志分级（按照重要程度从低到高）
+DEBUG、INFO、WARN、ERROR、FATAL
+
+2.日志框架
+    日志框架分为三部分：日志门面、日志适配器、日志库。
+    日志门面：slf4j（推荐使用）、commons-logging
+    日志库：log4j、logback（推荐使用）、log-jdk、其他日志库
+    日志适配器：
+
+推荐使用slf4j+logback。
+
+在springboot application.yml中配置如下：
+a.输出级别配置：
+    # 指定包下日志级别
+    logging.level.com.xxx.xxx=info
+    # 指定文件日志级别
+    logging.level.com.xxx.xxx.yyy=warn
+    # 未指定级别则采用Spring-Boot默认日志级别info
+
+b.日志文件配置：logging.path和logging.file同时配置时，只有logging.file生效
+    # 指定日志输出文件
+    logging.file=/var/log/log.log
+    # 指定日志输出路径，默认输出文件为spring.log,没有则自动创建
+    logging.path=/var/log
+
+c.日志格式配置
+    # 控制台日志输出格式
+    logging.pattern.console=
+    # 日志文件输出格式
+    logging.pattern.file=
+
+    格式说明：
+    logging.pattern.file="%d{yyyy-MM-dd  HH:mm:ss.SSS} [%thread] %-5level %logger{80} - %msg%n"
+    # 1. 时间 ： %d{yyyy-MM-dd  HH:mm:ss.SSS}
+    # 2. 线程 :  %thread
+    # 3. 级别 ： %-5level
+    # 4. logger：%logger{80}
+    # 5. 信息 ： %msg
+    # 6. 换行 ： %n
+    ---------------------
+
+
+
+
+
+
+
+
