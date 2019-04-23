@@ -29,7 +29,7 @@ spring:
       min-evictable-idle-time-millis: 30000 #配置一个连接在池中最小生存的时间，单位是毫秒
       test-on-borrow: false #申请连接时会执行validationQuery检测连接是否有效,开启会降低性能,默认为true
       test-on-return: false #归还连接时会执行validationQuery检测连接是否有效,开启会降低性能,默认为true
-      exception-sorter: true #当数据库抛出不可恢复的异常时,抛弃该连接
+      #exception-sorter: false #当数据库抛出不可恢复的异常时,抛弃该连接
       max-pool-prepared-statement-per-connection-size: 20 #当值大于0时poolPreparedStatements会自动修改为true
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -40,4 +40,4 @@ mybatis:
     map-underscore-to-camel-case: true
   #实体扫描，多个package用逗号或者分号分隔
   type-aliases-package: com.dcqc.demo.学习笔记.进阶.mybatis.entity
-  mapper-locations: classpath:mapper/*.xml
+  mapper-locations: com.dcqc.demo.学习笔记.进阶.mybatis.mapper/*.xml
