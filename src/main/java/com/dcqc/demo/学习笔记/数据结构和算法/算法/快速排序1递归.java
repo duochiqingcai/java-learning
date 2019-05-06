@@ -25,7 +25,9 @@ public class 快速排序1递归 {
     //使用递归
     public static void quickSort(int[] arr, int startIndex, int endIndex) {
         //递归结束条件，startIndex>=endIndex
-        if (startIndex >= endIndex) return;
+        if (startIndex >= endIndex) {
+            return;
+        }
 
         //得到基准元素位置
         int pivotIndex = partition(arr, startIndex, endIndex);
