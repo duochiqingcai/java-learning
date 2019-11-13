@@ -1,0 +1,44 @@
+文档介绍关于mysql单表CURD知识。
+以mysql示例数据库sakila.flim表为例
+
+1.C，Create增加，添加
+insert into 表名(列名1,列名2...) values(值1,值2...);
+如果对表中的所有列添加数据，列名可省略，即insert into 表名 values(值1,值2...);
+
+2.U，Update更新，修改
+update 表名 set 列名1=值1,列名2=值2...[where条件(可选)];
+
+3.R，Read读取，查询
+select 列名1,列名2... from 表名; // 基础查询语句 select * from film
+    a.WHERE条件： //行条件，WHERE后可跟条件子句
+        = != > >= < <= <>(不等于) 即条件判断 // SELECT * FROM film WHERE rating = 'PG';
+        BETWEEN...AND  即>=且<=  // SELECT * FROM film WHERE rental_duration BETWEEN 3 AND 6;
+        IN(set)        即在set集合内 // SELECT * FROM film WHERE rental_duration IN(4,5,6);
+        IS NULL        即空值 // SELECT * FROM film WHERE rental_duration IS NULL;
+        AND            即且(同时满足条件)  //  SELECT * FROM film WHERE rental_duration = 3 AND rating = 'PG';
+        OR             即或者  // SELECT * FROM film WHERE rental_duration = 3 OR rating = 'PG';
+        NOT            即非  // SELECT * FROM film WHERE NOT rating = 'PG';
+        LIKE           即模糊查询,使用通配符（尽量减少使用LIKE，效率较差）
+            %  //代表任意字符(包括0) // SELECT * FROM film WHERE title LIKE '%A%';
+            _  //与%相似，%可代表多个字符，_只能代表一个任意字符  // SELECT * FROM film WHERE title LIKE '_A%';第二个字符为A
+
+    b.GROUP BY 汇总数据，对结果进行分组：结合函数，根据一个或多个列名对结果集进行分组。
+    语法：SELECT 列名,count(列名) FROM film WHERE...GROUP BY... ;//如果是两个列名分组，先根据第一个列分组，结果集为A，然后再根据第二个列对结果集A进行分组获得结果集B。
+        SELECT rental_duration,count(rental_duration),rating,count(rating) FROM film GROUP BY rental_duration,rating ;
+
+        通常可以在GROUP BY之后添加HAVING +函数，对分组后的结果集B再进行筛选获得结果集C。
+        SELECT rental_duration,count(rental_duration),rating,count(rating) FROM film GROUP BY rental_duration,rating HAVING  ;
+
+    c.ORDER BY...ASC|DESC  根据指定列对结果集进行升序/降序排序
+    语法：SELECT 列名 FROM 表名 WHERE...ORDER BY 列名 ASC|DESC;
+        SELECT * FROM film WHERE rating = 'PG' ORDER BY rental_rate ASC; //
+
+    d.子查询
+    语法：SELECT * FROM film
+
+
+
+
+
+
+
