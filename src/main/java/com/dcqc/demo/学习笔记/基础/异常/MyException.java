@@ -12,7 +12,7 @@ public class MyException extends RuntimeException {
      */
     private String exceptionCode;
 
-    public MyException(String message, String exceptionCode) {
+    public MyException(String message, String exceptionCode){
         super(message);
         this.exceptionCode = exceptionCode;
         System.out.println(message + " " + exceptionCode);

@@ -1,5 +1,7 @@
 文档介绍关于mysql单表CURD知识。
 以mysql示例数据库sakila.flim表为例
+EXPLAIN命令，分析SELECT语句。
+EXPLAIN... + SHOW WRANINGS...组合对SELECT语句进行分析。
 
 1.C，Create增加，添加
 insert into 表名(列名1,列名2...) values(值1,值2...);
@@ -12,7 +14,7 @@ update 表名 set 列名1=值1,列名2=值2...[where条件(可选)];
 select 列名1,列名2... from 表名; // 基础查询语句 select * from film
     a.WHERE条件： //行条件，WHERE后可跟条件子句
         = != > >= < <= <>(不等于) 即条件判断 // SELECT * FROM film WHERE rating = 'PG';
-        BETWEEN...AND  即>=且<=  // SELECT * FROM film WHERE rental_duration BETWEEN 3 AND 6;
+        BETWEEN...AND  范围查询，即>=且<=  // SELECT * FROM film WHERE rental_duration BETWEEN 3 AND 6;
         IN(set)        即在set集合内 // SELECT * FROM film WHERE rental_duration IN(4,5,6);
         IS NULL        即空值 // SELECT * FROM film WHERE rental_duration IS NULL;
         AND            即且(同时满足条件)  //  SELECT * FROM film WHERE rental_duration = 3 AND rating = 'PG';
@@ -33,8 +35,122 @@ select 列名1,列名2... from 表名; // 基础查询语句 select * from film
     语法：SELECT 列名 FROM 表名 WHERE...ORDER BY 列名 ASC|DESC;
         SELECT * FROM film WHERE rating = 'PG' ORDER BY rental_rate ASC; //
 
-    d.子查询
-    语法：SELECT * FROM film
+    d.子查询 关键字IN、EXISTS、ANY、ALL
+    语法：SELECT * FROM film WHERE condition OPERATOR(...);
+
+    IN：用于WHERE表达式中。检测结果集中是否存在特定值，如果存在就执行外部查询。
+        语法：SELECT ... FROM table WHERE column IN (subquery)
+        SELECT title,rating,rental_rate FROM film WHERE film_id IN (SELECT film_id FROM film WHERE title LIKE '_A%');
+    EXIST:子查询语句不返回查询结果集，而是一个真假值（true false）。
+        语法：SELECT ... FROM table WHERE  EXISTS (subquery)
+        SELECT title,rating,rental_rate FROM film WHERE EXISTS (SELECT film_id FROM film WHERE rental_rate > 5);
+    ANY：满足子查询任意条件，就可执行外部语句。
+        语法：SELECT ... FROM table WHERE column ANY(subquery)
+    ALL：满足所有结果才可以执行外部语句。
+        语法：SELECT ... FROM table WHERE column ALL(subquery)
+
+    e.组合查询UNION，合并两个或多个查询结果集(UNION必须包含相同的列、表达式、或者聚合函数)
+        语法：SELECT column1, column2 FROM table WHERE...
+                UNION
+              SELECT column1, column2 FROM table WHERE...
+        SELECT film_id,title,rental_duration
+        FROM film WHERE rating = 'NC-17'
+        UNION ALL(UNION ALL会列出两个结果集中的重复值，不会去重复；UNION会自动去重复)
+        SELECT film_id,title,rental_duration
+        FROM film WHERE rental_rate = 4.99;
+
+    f.聚合函数 Aggregate
+        COUNT(expr):会遍历整张表，返回指定列数目，注意值为NULL时不计入。三种COUNT(字段)、COUNT(1)、COUNT(*)比较（再Innodb引擎中的表现）
+            1.COUNT(字段)：如果字段定义为NOT NULL，逐行读取该字段，按行累加；如果字段允许为NULL，逐行读取并判断该字段的值，不为NULL才累加。
+
+            2.COUNT(主键id)：引擎遍历整张表，把每一行id值全部取出，返回给server层，然后server对结果集进行判断，不为NULL的，按行累加。
+
+            3.COUNT(1):引擎遍历整张表，但是不取值（与COUNT(字段)不同），server层对于返回结果集的每一行，放一个数字"1"进去，判断不为NULL的，按行累加。
+
+            4.COUNT(*):遍历整张表，但是不会取出全部字段，不取值，COUNT(*)肯定不为NULL，按行累加。
+
+            结论：效率排序，COUNT(字段)<COUNT(主键id)<COUNT(1)≈COUNT(*)，推荐使用COUNT(*)，官方也是推荐使用COUNT(*).
+
+        AVG(expr):返回平均值。
+
+        SUM(expr):返回和。
+
+        FIRST(expr)：返回结果集的第一个值。
+
+        LAST(expr)：返回结果集的最后一个值。
+
+        MIN(expr):返回结果集的最小值。
+
+        MAX(expr)：返回结果集的最大值。
+
+    g.scalar函数(我了解不多。。。)
+        UCASE(expr):将字段转换为大写格式。
+        LCASE(expr):将字段转换为小写格式。
+        MID(expr):从文本字段提取指定长度字符。MID(column,start[,length])
+        LEN(expr):返回文本字段的长度。
+        ROUND(expr):返回数值字段对指定小数位数的四舍五入的值。ROUND(column,decimals)
+        NOW(expr):返回系统当前日期和时间。
+        FORMAT(expr)：按某种格式格式化字段。
+
+4.D,Delete删除
+    DELETE FROM table_name [WHERE...] 如果不加条件，则删除表中所有数据。
+
+5.SQL执行语法顺序
+--查询组合字段
+(5)select (5-2) distinct(5-3) top(<top_specification>)(5-1)<select_list>
+--连表
+(1)from (1-J)<left_table><join_type> join <right_table> on <on_predicate>
+        (1-A)<left_table><apply_type> apply <right_table_expression> as <alias>
+        (1-P)<left_table> pivot (<pivot_specification>) as <alias>
+        (1-U)<left_table> unpivot (<unpivot_specification>) as <alias>
+--查询条件
+(2)where <where_pridicate>
+--分组
+(3)group by <group_by_specification>
+--分组条件
+(4)having<having_predicate>
+--排序
+(6)order by<order_by_list>
+(7)limit <n,m>//MySQL支持limit Oracle sqlserver支持top1
+
+6.JavaType和JdbcType对照表
+JDBC Type           Java Type
+------------------------------
+CHAR                String
+VARCHAR             String
+LONGVARCHAR         String
+NUMERIC             java.math.BigDecimal
+DECIMAL             java.math.BigDecimal
+BIT                 boolean
+BOOLEAN             boolean
+TINYINT             byte
+SMALLINT            short
+INTEGER             INTEGER
+BIGINT              long
+REAL                float
+FLOAT               double
+DOUBLE              double
+BINARY              byte[]
+VARBINARY           byte[]
+LONGVARBINARY       byte[]
+DATE                java.sql.Date
+TIME                java.sql.Time
+TIMESTAMP           java.sql.Timestamp
+CLOB                Clob
+BLOB                Blob
+ARRAY               Array
+DISTINCT            mapping of underlying type
+STRUCT              Struct
+REF                 Ref
+DATALINK            java.net.URL[color=red][/color]
+
+
+
+
+
+
+
+
 
 
 

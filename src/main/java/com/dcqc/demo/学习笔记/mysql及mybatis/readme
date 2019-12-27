@@ -2,6 +2,8 @@
 jdbc:mysql://localhost:3306/sakila_c?useSSL=false&useUnicode=true&characterEncoding=UTF-8
 2.时区错误 java.sql.SQLException: The server time zone value '�й���׼ʱ��' is unrecognized or represents more than one time zone. You must configure either the server or JDBC driver
 由于数据库和系统时区差异造成，可在url后添加serverTimezone=GMT.
+
 3.springboot进行单元测试时报错，Unable to find a @SpringBootConfiguration, you need to use @ContextConfiguration or @SpringBootTest(classes=...) with your test
 需要保证Test和启动类Application在相同的模块下.
+
 4.

@@ -85,7 +85,6 @@ Java多线程
 5.线程生命周期内的状态5个
     NEW（新建状态）、RUNNABLE（就绪状态）、RUNNING（运行状态）、BLOCKED（阻塞状态）、DEAD（终止状态）
 
-
 6.停止一个线程
     stop(),suspend(),resume()（仅用于与suspend()一起使用）这些方法已被弃用.
 
